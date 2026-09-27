@@ -145,13 +145,13 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Shift Selector Segmented Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-lg">
+        <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-lg overflow-x-auto max-w-full scrollbar-none">
           <button
             onClick={() => onSelectShift('morning')}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap ${
+            className={`px-3 sm:px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap shrink-0 min-h-[36px] ${
               currentShift === 'morning'
                 ? 'bg-white text-slate-900 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -161,7 +161,7 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
           </button>
           <button
             onClick={() => onSelectShift('evening')}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap ${
+            className={`px-3 sm:px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap shrink-0 min-h-[36px] ${
               currentShift === 'evening'
                 ? 'bg-white text-slate-900 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -171,7 +171,7 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
           </button>
           <button
             onClick={() => onSelectShift('night')}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap ${
+            className={`px-3 sm:px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap shrink-0 min-h-[36px] ${
               currentShift === 'night'
                 ? 'bg-white text-slate-900 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -182,14 +182,14 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
         </div>
 
         {/* Progress & Quick Stats */}
-        <div className="flex items-center gap-4 text-xs font-mono text-slate-600">
+        <div className="flex items-center justify-between sm:justify-end gap-3 text-xs font-mono text-slate-600">
           <div>
             <span className="text-slate-500">Progress:</span>{' '}
             <span className="font-bold text-slate-900 tabular-nums">{completionPercent}%</span>
             <span className="text-slate-400 ml-1">({checkedItems}/{totalItems})</span>
           </div>
           {issueItems > 0 && (
-            <div className="text-red-700 font-semibold bg-red-50 px-2 py-0.5 rounded">
+            <div className="text-red-700 font-semibold bg-red-50 px-2 py-0.5 rounded text-[11px]">
               {issueItems} Issue{issueItems > 1 ? 's' : ''} Flagged
             </div>
           )}
@@ -197,22 +197,22 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
       </div>
 
       {/* Shift Meta & Staff In-Charge Banner */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5 items-end">
+      <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1">
+            <label className="block text-[10px] sm:text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1">
               Audit Date
             </label>
             <input
               type="date"
               value={shiftData.date}
               onChange={(e) => onUpdateShiftData(prev => ({ ...prev, date: e.target.value }))}
-              className="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+              className="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 min-h-[38px]"
             />
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1">
+            <label className="block text-[10px] sm:text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1">
               Staff In-Charge Name
             </label>
             <div className="relative">
@@ -221,14 +221,14 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
                 placeholder="e.g. Staff Nurse Fatima / Incharge"
                 value={shiftData.staffName}
                 onChange={(e) => onUpdateShiftData(prev => ({ ...prev, staffName: e.target.value }))}
-                className="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-2 text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                className="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-2 text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 min-h-[38px]"
               />
               <User className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
             </div>
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1">
+            <label className="block text-[10px] sm:text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1">
               Verification Time
             </label>
             <div className="relative">
@@ -237,7 +237,7 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
                 placeholder="e.g. 08:30 AM"
                 value={shiftData.timeChecked}
                 onChange={(e) => onUpdateShiftData(prev => ({ ...prev, timeChecked: e.target.value }))}
-                className="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-2 text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                className="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-2 text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 min-h-[38px]"
               />
               <Clock className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
             </div>
@@ -246,7 +246,7 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handleSignOff}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-semibold rounded-lg transition-all ${
+              className={`w-full flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-semibold rounded-lg transition-all min-h-[38px] ${
                 shiftData.verified
                   ? 'bg-emerald-50 text-emerald-800 border border-emerald-300'
                   : 'bg-slate-900 hover:bg-slate-800 text-white shadow-xs'
@@ -277,12 +277,12 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
       </div>
 
       {/* Filter and Quick Action Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        {/* Filters */}
-        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        {/* Filters with smooth horizontal scroll on phone */}
+        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg overflow-x-auto max-w-full scrollbar-none">
           <button
             onClick={() => setFilter('all')}
-            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+            className={`px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 min-h-[34px] ${
               filter === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -290,7 +290,7 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
           </button>
           <button
             onClick={() => setFilter('pending')}
-            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+            className={`px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 min-h-[34px] ${
               filter === 'pending' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -298,7 +298,7 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
           </button>
           <button
             onClick={() => setFilter('issues')}
-            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+            className={`px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 min-h-[34px] ${
               filter === 'issues' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -306,31 +306,33 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
           </button>
         </div>
 
-        {/* Search & Bulk Check */}
-        <div className="flex items-center gap-2">
-          <div className="relative">
+        {/* Search & Bulk Check (responsive row/wrap) */}
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
+          <div className="relative flex-1 sm:flex-initial w-full sm:w-56">
             <input
               type="text"
               placeholder="Search checklist item..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="text-xs bg-white border border-slate-200 rounded-lg pl-7 pr-3 py-1.5 text-slate-900 w-44 sm:w-56 focus:outline-none focus:ring-1 focus:ring-slate-900"
+              className="text-xs bg-white border border-slate-200 rounded-lg pl-7 pr-3 py-2 text-slate-900 w-full focus:outline-none focus:ring-1 focus:ring-slate-900 min-h-[36px]"
             />
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2.5" />
           </div>
 
-          <button
-            onClick={() => handleCheckAll(true)}
-            className="px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors whitespace-nowrap"
-          >
-            Mark All OK
-          </button>
-          <button
-            onClick={() => handleCheckAll(false)}
-            className="px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors whitespace-nowrap"
-          >
-            Reset
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => handleCheckAll(true)}
+              className="px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors whitespace-nowrap min-h-[36px]"
+            >
+              Mark All OK
+            </button>
+            <button
+              onClick={() => handleCheckAll(false)}
+              className="px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors whitespace-nowrap min-h-[36px]"
+            >
+              Reset
+            </button>
+          </div>
         </div>
       </div>
 
@@ -396,13 +398,13 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
                           <button
                             type="button"
                             onClick={() => handleToggleItem(item.id)}
-                            className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center shrink-0 border transition-all ${
+                            className={`mt-0.5 w-6 h-6 rounded-md flex items-center justify-center shrink-0 border transition-all ${
                               isChecked
-                                ? 'bg-emerald-600 border-emerald-600 text-white'
+                                ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs'
                                 : 'border-slate-300 bg-white hover:border-slate-400'
                             }`}
                           >
-                            {isChecked && <Check className="w-3.5 h-3.5" />}
+                            {isChecked && <Check className="w-4 h-4" />}
                           </button>
 
                           <div className="flex-1 min-w-0">
@@ -439,10 +441,10 @@ export const ShiftChecklist: React.FC<ShiftChecklistProps> = ({
                         <div className="flex items-center gap-1 shrink-0">
                           <button
                             onClick={() => handleSetStatus(item.id, 'ok')}
-                            className={`px-2 py-1 text-[11px] font-semibold rounded transition-colors ${
+                            className={`px-2.5 py-1.5 text-xs font-semibold rounded-md transition-colors min-h-[32px] min-w-[36px] ${
                               item.status === 'ok' && item.checked
                                 ? 'bg-emerald-600 text-white'
-                                : 'text-slate-600 hover:bg-slate-100'
+                                : 'text-slate-600 hover:bg-slate-100 bg-slate-50 border border-slate-200'
                             }`}
                           >
                             OK

@@ -240,20 +240,20 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
         {/* Banner with Direct Excel Download Callout */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl p-4 sm:p-6 shadow-md mb-6 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-md mb-4 sm:mb-6 relative overflow-hidden">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-[11px] font-mono tracking-wider uppercase text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/80">
-                  Ward 3B Internal Audit & Quality System
+              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span className="text-[10px] sm:text-[11px] font-mono tracking-wider uppercase text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/80">
+                  Ward 3B Internal Audit
                 </span>
-                <span className="text-[11px] font-mono text-slate-300">
+                <span className="text-[10px] sm:text-[11px] font-mono text-slate-300">
                   Date: {morningData.date || todayStr}
                 </span>
               </div>
-              <h1 className="text-lg sm:text-xl font-bold tracking-tight text-white">
+              <h1 className="text-base sm:text-xl font-bold tracking-tight text-white leading-tight">
                 Daily Shift Audit Checklists & 3-Shift Handover Matrix
               </h1>
               <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
@@ -263,46 +263,46 @@ export default function App() {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full lg:w-auto">
               <button
                 onClick={handleDownloadExcel}
-                className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 rounded-xl shadow-md transition-all whitespace-nowrap"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 rounded-xl shadow-md transition-all whitespace-nowrap min-h-[42px]"
               >
-                <Download className="w-4 h-4" />
-                <span>Download Excel File (.xlsx)</span>
+                <Download className="w-4 h-4 shrink-0" />
+                <span>Download Excel (.xlsx)</span>
               </button>
 
               <button
                 onClick={handleResetDay}
                 title="Start a new daily audit record"
-                className="inline-flex items-center gap-1.5 px-3 py-2.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/90 hover:bg-slate-700 border border-slate-700 rounded-xl transition-all whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/90 hover:bg-slate-700 border border-slate-700 rounded-xl transition-all whitespace-nowrap min-h-[42px]"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <RefreshCw className="w-3.5 h-3.5 shrink-0" />
                 <span>New Day</span>
               </button>
             </div>
           </div>
 
-          {/* Quick Sheet Manifest Chips */}
-          <div className="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap items-center gap-2 text-[11px] text-slate-300">
-            <span className="font-semibold text-slate-400">Excel Workbook Sheets:</span>
-            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-emerald-300">
-              Sheet 1: Morning (8am-2pm)
+          {/* Quick Sheet Manifest Chips with smooth scroll on mobile */}
+          <div className="mt-3.5 pt-3 border-t border-slate-800/80 flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] text-slate-300 overflow-x-auto scrollbar-none pb-0.5">
+            <span className="font-semibold text-slate-400 shrink-0">Sheets:</span>
+            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-emerald-300 shrink-0 whitespace-nowrap">
+              1: Morning (8am-2pm)
             </span>
-            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-amber-300">
-              Sheet 2: Evening (2pm-8pm)
+            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-amber-300 shrink-0 whitespace-nowrap">
+              2: Evening (2pm-8pm)
             </span>
-            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-indigo-300">
-              Sheet 3: Night (8pm-8am)
+            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-indigo-300 shrink-0 whitespace-nowrap">
+              3: Night (8pm-8am)
             </span>
-            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-sky-300">
-              Sheet 4: 3-Shift Handover
+            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-sky-300 shrink-0 whitespace-nowrap">
+              4: Handover
             </span>
-            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-slate-300">
-              Sheet 5: Master Audit (10 Areas)
+            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-slate-300 shrink-0 whitespace-nowrap">
+              5: Master Audit
             </span>
-            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-slate-300">
-              Sheet 6: Deficiencies & Sign-off
+            <span className="bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 font-mono text-slate-300 shrink-0 whitespace-nowrap">
+              6: Deficiencies
             </span>
           </div>
         </div>

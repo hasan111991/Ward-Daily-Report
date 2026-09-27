@@ -162,65 +162,67 @@ export const PrintView: React.FC<PrintViewProps> = ({
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Filter scope buttons */}
-            <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-slate-200 text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full">
+            {/* Filter scope buttons with smooth horizontal scroll on mobile */}
+            <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-slate-200 text-xs overflow-x-auto max-w-full scrollbar-none">
               <button
                 onClick={() => setPrintScope('all')}
-                className={`px-2.5 py-1 rounded font-medium transition-colors ${
-                  printScope === 'all' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
+                className={`px-2.5 py-1.5 rounded-md font-medium transition-colors whitespace-nowrap shrink-0 min-h-[34px] ${
+                  printScope === 'all' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 All 4 Pages
               </button>
               <button
                 onClick={() => setPrintScope('morning')}
-                className={`px-2 py-1 rounded font-medium transition-colors ${
-                  printScope === 'morning' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
+                className={`px-2.5 py-1.5 rounded-md font-medium transition-colors whitespace-nowrap shrink-0 min-h-[34px] ${
+                  printScope === 'morning' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Morning
               </button>
               <button
                 onClick={() => setPrintScope('evening')}
-                className={`px-2 py-1 rounded font-medium transition-colors ${
-                  printScope === 'evening' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
+                className={`px-2.5 py-1.5 rounded-md font-medium transition-colors whitespace-nowrap shrink-0 min-h-[34px] ${
+                  printScope === 'evening' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Evening
               </button>
               <button
                 onClick={() => setPrintScope('night')}
-                className={`px-2 py-1 rounded font-medium transition-colors ${
-                  printScope === 'night' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
+                className={`px-2.5 py-1.5 rounded-md font-medium transition-colors whitespace-nowrap shrink-0 min-h-[34px] ${
+                  printScope === 'night' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Night
               </button>
               <button
                 onClick={() => setPrintScope('handover')}
-                className={`px-2 py-1 rounded font-medium transition-colors ${
-                  printScope === 'handover' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'
+                className={`px-2.5 py-1.5 rounded-md font-medium transition-colors whitespace-nowrap shrink-0 min-h-[34px] ${
+                  printScope === 'handover' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Handover Sheet
               </button>
             </div>
 
-            <button
-              onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs transition-colors"
-            >
-              <Printer className="w-4 h-4" />
-              <span>Print Clean Pages</span>
-            </button>
+            <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+              <button
+                onClick={handlePrint}
+                className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs transition-colors min-h-[36px]"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Print Document</span>
+              </button>
 
-            <button
-              onClick={onClose}
-              className="p-2 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-200"
-            >
-              <X className="w-5 h-5" />
-            </button>
+              <button
+                onClick={onClose}
+                className="p-2 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-200 min-h-[36px] min-w-[36px] flex items-center justify-center"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
 
