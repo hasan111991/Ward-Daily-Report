@@ -18,8 +18,9 @@ import { PatientAuditModal } from './components/PatientAuditModal';
 import { MasterAuditChecklist } from './components/MasterAuditChecklist';
 import { StaffReadinessModal } from './components/StaffReadinessModal';
 import { PrintView } from './components/PrintView';
+import { Toast, ToastData } from './components/Toast';
 import { exportWardAuditExcel } from './utils/excelExport';
-import { FileSpreadsheet, Download, RefreshCw, CheckCircle2, ShieldCheck, AlertCircle, FileText } from 'lucide-react';
+import { FileSpreadsheet, Download, RefreshCw, CheckCircle2, ShieldCheck, AlertCircle, FileText, Loader2 } from 'lucide-react';
 
 function safeGetStorage<T>(key: string, fallback: T): T {
   try {
@@ -112,6 +113,10 @@ export default function App() {
   const [wardReady, setWardReady] = useState<boolean>(true);
   const [finalCheckedBy, setFinalCheckedBy] = useState<string>('Sister In-Charge / Quality Lead');
 
+  // Excel Export State & Feedback
+  const [isExporting, setIsExporting] = useState<boolean>(false);
+  const [exportToast, setExportToast] = useState<ToastData | null>(null);
+
   // Sync to localStorage safely
   useEffect(() => {
     safeSetStorage('ward3b_redflags', verifiedFlags);
@@ -157,15 +162,43 @@ export default function App() {
   const overallPercent = totalAuditItems > 0 ? Math.round((totalChecked / totalAuditItems) * 100) : 0;
 
   const handleDownloadExcel = () => {
-    exportWardAuditExcel({
-      morningData,
-      eveningData,
-      nightData,
-      handoverPoints,
-      deficiencyLog: deficiencies,
-      patientAuditList: patientList,
-      dateString: morningData.date || todayStr
+    if (isExporting) return;
+    setIsExporting(true);
+    setExportToast({
+      status: 'loading',
+      title: 'Generating Excel Workbook...',
+      message: 'Compiling 6 sheets: Morning, Evening, Night, Handover, Master Audit & Deficiencies'
     });
+
+    // Timeout allows browser to render loading spinner and toast immediately
+    setTimeout(() => {
+      try {
+        const fileName = exportWardAuditExcel({
+          morningData,
+          eveningData,
+          nightData,
+          handoverPoints,
+          deficiencyLog: deficiencies,
+          patientAuditList: patientList,
+          dateString: morningData.date || todayStr
+        });
+
+        setExportToast({
+          status: 'success',
+          title: 'Excel Workbook Exported!',
+          message: `${fileName} downloaded successfully.`
+        });
+      } catch (err: any) {
+        console.error('Excel Export Error:', err);
+        setExportToast({
+          status: 'error',
+          title: 'Excel Export Failed',
+          message: err?.message || 'An error occurred while building the workbook. Please try again.'
+        });
+      } finally {
+        setIsExporting(false);
+      }
+    }, 300);
   };
 
   const handleToggleRedFlag = (id: string) => {
@@ -237,6 +270,7 @@ export default function App() {
         onDownloadExcel={handleDownloadExcel}
         onOpenPrint={() => setShowPrintModal(true)}
         completedPercent={overallPercent}
+        isExporting={isExporting}
       />
 
       {/* Main Content Area */}
@@ -266,10 +300,24 @@ export default function App() {
             <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full lg:w-auto">
               <button
                 onClick={handleDownloadExcel}
-                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 rounded-xl shadow-md transition-all whitespace-nowrap min-h-[42px]"
+                disabled={isExporting}
+                className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2.5 text-xs font-bold text-white rounded-xl shadow-md transition-all whitespace-nowrap min-h-[42px] ${
+                  isExporting
+                    ? 'bg-emerald-700 opacity-90 cursor-not-allowed'
+                    : 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700'
+                }`}
               >
-                <Download className="w-4 h-4 shrink-0" />
-                <span>Download Excel (.xlsx)</span>
+                {isExporting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 shrink-0 animate-spin" />
+                    <span>Generating Excel...</span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4 shrink-0" />
+                    <span>Download Excel (.xlsx)</span>
+                  </>
+                )}
               </button>
 
               <button
@@ -391,9 +439,10 @@ export default function App() {
           <div className="flex items-center gap-4">
             <button
               onClick={handleDownloadExcel}
-              className="text-emerald-700 hover:text-emerald-900 font-semibold"
+              disabled={isExporting}
+              className="text-emerald-700 hover:text-emerald-900 font-semibold disabled:opacity-50"
             >
-              Export Excel (.xlsx)
+              {isExporting ? 'Generating Excel...' : 'Export Excel (.xlsx)'}
             </button>
             <span>·</span>
             <button
@@ -405,6 +454,9 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Floating Feedback Toast */}
+      <Toast toast={exportToast} onClose={() => setExportToast(null)} />
     </div>
   );
 }

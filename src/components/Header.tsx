@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileSpreadsheet, Printer, ShieldCheck } from 'lucide-react';
+import { FileSpreadsheet, Printer, ShieldCheck, Loader2 } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: string;
@@ -7,6 +7,7 @@ interface HeaderProps {
   onDownloadExcel: () => void;
   onOpenPrint: () => void;
   completedPercent: number;
+  isExporting?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -14,7 +15,8 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   onDownloadExcel,
   onOpenPrint,
-  completedPercent
+  completedPercent,
+  isExporting = false
 }) => {
   const navTabs = [
     { id: 'shifts', label: 'Shift Checklists' },
@@ -75,11 +77,26 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={onDownloadExcel}
-            className="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 shadow-xs rounded-lg transition-all whitespace-nowrap min-h-[36px]"
+            disabled={isExporting}
+            className={`inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs rounded-lg transition-all whitespace-nowrap min-h-[36px] ${
+              isExporting
+                ? 'bg-emerald-700 opacity-90 cursor-not-allowed'
+                : 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800'
+            }`}
           >
-            <FileSpreadsheet className="w-4 h-4 text-emerald-100" />
-            <span className="hidden sm:inline">Download Excel (.xlsx)</span>
-            <span className="sm:hidden font-bold">Excel</span>
+            {isExporting ? (
+              <>
+                <Loader2 className="w-4 h-4 text-emerald-100 animate-spin" />
+                <span className="hidden sm:inline">Generating...</span>
+                <span className="sm:hidden font-bold">...</span>
+              </>
+            ) : (
+              <>
+                <FileSpreadsheet className="w-4 h-4 text-emerald-100" />
+                <span className="hidden sm:inline">Download Excel (.xlsx)</span>
+                <span className="sm:hidden font-bold">Excel</span>
+              </>
+            )}
           </button>
         </div>
       </div>

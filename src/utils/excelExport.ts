@@ -222,5 +222,7 @@ export function exportWardAuditExcel({
 
   // Trigger browser download
   const cleanDate = dateString.replace(/[^a-zA-Z0-9]/g, '_');
-  XLSX.writeFile(wb, `Ward_3B_Daily_Internal_Audit_Checklist_${cleanDate}.xlsx`);
+  const fileName = `Ward_3B_Daily_Internal_Audit_Checklist_${cleanDate}.xlsx`;
+  XLSX.writeFile(wb, fileName);
+  return fileName;
 }
