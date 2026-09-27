@@ -1,0 +1,6 @@
+{
+  "name": "Ward 3B Daily Audit & 3-Shift Handover System",
+  "description": "Hospital internal audit preparation checklist with Morning, Evening, and Night shift checklists, 3-shift handover logging, deficiency action tracking, and multi-sheet Excel export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
