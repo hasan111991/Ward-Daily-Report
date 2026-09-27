@@ -21,6 +21,26 @@ import { PrintView } from './components/PrintView';
 import { exportWardAuditExcel } from './utils/excelExport';
 import { FileSpreadsheet, Download, RefreshCw, CheckCircle2, ShieldCheck, AlertCircle, FileText } from 'lucide-react';
 
+function safeGetStorage<T>(key: string, fallback: T): T {
+  try {
+    if (typeof window === 'undefined' || !window.localStorage) return fallback;
+    const item = window.localStorage.getItem(key);
+    return item ? JSON.parse(item) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function safeSetStorage(key: string, value: any): void {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    }
+  } catch {
+    // Ignore storage quota or security errors
+  }
+}
+
 export default function App() {
   const todayStr = new Date().toISOString().split('T')[0];
 
@@ -31,15 +51,12 @@ export default function App() {
 
   // Red flag states
   const [verifiedFlags, setVerifiedFlags] = useState<Record<string, boolean>>(() => {
-    const saved = localStorage.getItem('ward3b_redflags');
-    return saved ? JSON.parse(saved) : {};
+    return safeGetStorage('ward3b_redflags', {});
   });
 
   // Morning Shift Data
   const [morningData, setMorningData] = useState<ShiftData>(() => {
-    const saved = localStorage.getItem('ward3b_morning');
-    if (saved) return JSON.parse(saved);
-    return {
+    return safeGetStorage('ward3b_morning', {
       shift: 'morning',
       date: todayStr,
       staffName: '',
@@ -47,14 +64,12 @@ export default function App() {
       signature: '',
       verified: false,
       categories: MORNING_SHIFT_CATEGORIES
-    };
+    });
   });
 
   // Evening Shift Data
   const [eveningData, setEveningData] = useState<ShiftData>(() => {
-    const saved = localStorage.getItem('ward3b_evening');
-    if (saved) return JSON.parse(saved);
-    return {
+    return safeGetStorage('ward3b_evening', {
       shift: 'evening',
       date: todayStr,
       staffName: '',
@@ -62,14 +77,12 @@ export default function App() {
       signature: '',
       verified: false,
       categories: EVENING_SHIFT_CATEGORIES
-    };
+    });
   });
 
   // Night Shift Data
   const [nightData, setNightData] = useState<ShiftData>(() => {
-    const saved = localStorage.getItem('ward3b_night');
-    if (saved) return JSON.parse(saved);
-    return {
+    return safeGetStorage('ward3b_night', {
       shift: 'night',
       date: todayStr,
       staffName: '',
@@ -77,58 +90,55 @@ export default function App() {
       signature: '',
       verified: false,
       categories: NIGHT_SHIFT_CATEGORIES
-    };
+    });
   });
 
   // Handover points
   const [handoverPoints, setHandoverPoints] = useState<HandoverPoint[]>(() => {
-    const saved = localStorage.getItem('ward3b_handover');
-    return saved ? JSON.parse(saved) : INITIAL_HANDOVER_POINTS;
+    return safeGetStorage('ward3b_handover', INITIAL_HANDOVER_POINTS);
   });
 
   // Deficiencies
   const [deficiencies, setDeficiencies] = useState<DeficiencyLogEntry[]>(() => {
-    const saved = localStorage.getItem('ward3b_deficiencies');
-    return saved ? JSON.parse(saved) : INITIAL_DEFICIENCY_LOG;
+    return safeGetStorage('ward3b_deficiencies', INITIAL_DEFICIENCY_LOG);
   });
 
   // 5-Patient audit
   const [patientList, setPatientList] = useState<PatientAuditItem[]>(() => {
-    const saved = localStorage.getItem('ward3b_patient_audit');
-    return saved ? JSON.parse(saved) : INITIAL_PATIENT_AUDIT;
+    return safeGetStorage('ward3b_patient_audit', INITIAL_PATIENT_AUDIT);
   });
 
   // Final sign-off
   const [wardReady, setWardReady] = useState<boolean>(true);
   const [finalCheckedBy, setFinalCheckedBy] = useState<string>('Sister In-Charge / Quality Lead');
 
-  // Sync to localStorage
+  // Sync to localStorage safely
   useEffect(() => {
-    localStorage.setItem('ward3b_redflags', JSON.stringify(verifiedFlags));
+    safeSetStorage('ward3b_redflags', verifiedFlags);
   }, [verifiedFlags]);
 
   useEffect(() => {
-    localStorage.setItem('ward3b_morning', JSON.stringify(morningData));
+    safeSetStorage('ward3b_morning', morningData);
   }, [morningData]);
 
   useEffect(() => {
-    localStorage.setItem('ward3b_evening', JSON.stringify(eveningData));
+    safeSetStorage('ward3b_evening', eveningData);
   }, [eveningData]);
 
   useEffect(() => {
-    localStorage.setItem('ward3b_night', JSON.stringify(nightData));
+    safeSetStorage('ward3b_night', nightData);
   }, [nightData]);
 
   useEffect(() => {
-    localStorage.setItem('ward3b_handover', JSON.stringify(handoverPoints));
+    safeSetStorage('ward3b_handover', handoverPoints);
   }, [handoverPoints]);
 
   useEffect(() => {
-    localStorage.setItem('ward3b_deficiencies', JSON.stringify(deficiencies));
+    safeSetStorage('ward3b_deficiencies', deficiencies);
   }, [deficiencies]);
 
   useEffect(() => {
-    localStorage.setItem('ward3b_patient_audit', JSON.stringify(patientList));
+    safeSetStorage('ward3b_patient_audit', patientList);
   }, [patientList]);
 
   // Overall compliance percent calculation
