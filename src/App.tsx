@@ -9,7 +9,7 @@ import {
   INITIAL_PATIENT_AUDIT,
   RED_FLAG_ITEMS
 } from './data/checklistData';
-import { Header } from './components/Header';
+import { Header, SyncStatus } from './components/Header';
 import { RedFlagBanner } from './components/RedFlagBanner';
 import { ShiftChecklist } from './components/ShiftChecklist';
 import { HandoverSheet } from './components/HandoverSheet';
@@ -20,6 +20,11 @@ import { StaffReadinessModal } from './components/StaffReadinessModal';
 import { PrintView } from './components/PrintView';
 import { Toast, ToastData } from './components/Toast';
 import { exportWardAuditExcel } from './utils/excelExport';
+import {
+  saveDailyAuditToFirestore,
+  subscribeToDailyAudit,
+  testFirestoreConnection
+} from './firebase';
 import { FileSpreadsheet, Download, RefreshCw, CheckCircle2, ShieldCheck, AlertCircle, FileText, Loader2 } from 'lucide-react';
 
 function safeGetStorage<T>(key: string, fallback: T): T {
@@ -116,6 +121,89 @@ export default function App() {
   // Excel Export State & Feedback
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [exportToast, setExportToast] = useState<ToastData | null>(null);
+
+  // Backend Cloud Database Sync State
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>('synced');
+  const [hasLoadedFromCloud, setHasLoadedFromCloud] = useState<boolean>(false);
+
+  // 1. Initial Firestore Connection Check
+  useEffect(() => {
+    testFirestoreConnection().then(connected => {
+      if (!connected) {
+        setSyncStatus('offline');
+      }
+    });
+  }, []);
+
+  // 2. Real-time Subscription to Backend Firestore for Today's Record
+  useEffect(() => {
+    const auditDate = morningData.date || todayStr;
+    const unsubscribe = subscribeToDailyAudit(
+      auditDate,
+      (remoteRecord) => {
+        if (remoteRecord && remoteRecord.date === auditDate) {
+          if (!hasLoadedFromCloud) {
+            // First time hydrating from cloud
+            if (remoteRecord.morningData) setMorningData(remoteRecord.morningData);
+            if (remoteRecord.eveningData) setEveningData(remoteRecord.eveningData);
+            if (remoteRecord.nightData) setNightData(remoteRecord.nightData);
+            if (remoteRecord.handoverPoints) setHandoverPoints(remoteRecord.handoverPoints);
+            if (remoteRecord.deficiencies) setDeficiencies(remoteRecord.deficiencies);
+            if (remoteRecord.patientList) setPatientList(remoteRecord.patientList);
+            if (remoteRecord.verifiedFlags) setVerifiedFlags(remoteRecord.verifiedFlags);
+            if (typeof remoteRecord.wardReady === 'boolean') setWardReady(remoteRecord.wardReady);
+            if (remoteRecord.finalCheckedBy) setFinalCheckedBy(remoteRecord.finalCheckedBy);
+            setHasLoadedFromCloud(true);
+          }
+          setSyncStatus('synced');
+        }
+      },
+      (error) => {
+        console.warn('Real-time cloud sync fallback to local mode:', error);
+        setSyncStatus('offline');
+      }
+    );
+
+    return () => unsubscribe();
+  }, [morningData.date, hasLoadedFromCloud]);
+
+  // 3. Debounced Auto-Save to Backend Firestore Database
+  useEffect(() => {
+    setSyncStatus('saving');
+    const timer = setTimeout(async () => {
+      try {
+        await saveDailyAuditToFirestore({
+          date: morningData.date || todayStr,
+          morningData,
+          eveningData,
+          nightData,
+          handoverPoints,
+          deficiencies,
+          patientList,
+          verifiedFlags,
+          wardReady,
+          finalCheckedBy,
+          updatedAt: new Date().toISOString()
+        });
+        setSyncStatus('synced');
+      } catch (err) {
+        console.error('Failed to sync to backend Firestore:', err);
+        setSyncStatus('offline');
+      }
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, [
+    morningData,
+    eveningData,
+    nightData,
+    handoverPoints,
+    deficiencies,
+    patientList,
+    verifiedFlags,
+    wardReady,
+    finalCheckedBy
+  ]);
 
   // Sync to localStorage safely
   useEffect(() => {
@@ -271,6 +359,7 @@ export default function App() {
         onOpenPrint={() => setShowPrintModal(true)}
         completedPercent={overallPercent}
         isExporting={isExporting}
+        syncStatus={syncStatus}
       />
 
       {/* Main Content Area */}

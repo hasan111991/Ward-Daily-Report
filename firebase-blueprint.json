@@ -1,0 +1,62 @@
+{
+  "entities": {
+    "DailyAudit": {
+      "title": "DailyAudit",
+      "description": "Daily Ward 3B internal audit checklist, 3-shift handovers, and deficiency tracking",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "Date of the audit in YYYY-MM-DD or standard formatted string"
+        },
+        "morningData": {
+          "type": "object",
+          "description": "Morning shift audit items, verification, and staff details"
+        },
+        "eveningData": {
+          "type": "object",
+          "description": "Evening shift audit items, verification, and staff details"
+        },
+        "nightData": {
+          "type": "object",
+          "description": "Night shift audit items, verification, and staff details"
+        },
+        "handoverPoints": {
+          "type": "array",
+          "description": "8-point bedside handover transitions across 3 shifts"
+        },
+        "deficiencies": {
+          "type": "array",
+          "description": "Deficiency log entries with corrective action and resolution status"
+        },
+        "patientList": {
+          "type": "array",
+          "description": "5-patient sample audit details"
+        },
+        "verifiedFlags": {
+          "type": "object",
+          "description": "Red flag items verified status map"
+        },
+        "wardReady": {
+          "type": "boolean",
+          "description": "Overall ward readiness status"
+        },
+        "finalCheckedBy": {
+          "type": "string",
+          "description": "Name of the Sister In-Charge or Quality Lead signing off"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of last modification"
+        }
+      },
+      "required": ["date"]
+    }
+  },
+  "firestore": {
+    "/daily_audits/{auditId}": {
+      "schema": "DailyAudit",
+      "description": "Collection of daily ward audit records indexed by audit date"
+    }
+  }
+}

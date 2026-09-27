@@ -1,5 +1,7 @@
 import React from 'react';
-import { FileSpreadsheet, Printer, ShieldCheck, Loader2 } from 'lucide-react';
+import { FileSpreadsheet, Printer, ShieldCheck, Loader2, Cloud, CloudOff, AlertCircle } from 'lucide-react';
+
+export type SyncStatus = 'synced' | 'saving' | 'offline' | 'error';
 
 interface HeaderProps {
   activeTab: string;
@@ -8,6 +10,7 @@ interface HeaderProps {
   onOpenPrint: () => void;
   completedPercent: number;
   isExporting?: boolean;
+  syncStatus?: SyncStatus;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -16,7 +19,8 @@ export const Header: React.FC<HeaderProps> = ({
   onDownloadExcel,
   onOpenPrint,
   completedPercent,
-  isExporting = false
+  isExporting = false,
+  syncStatus = 'synced'
 }) => {
   const navTabs = [
     { id: 'shifts', label: 'Shift Checklists' },
@@ -66,6 +70,53 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Zone 3: Primary actions (responsive on mobile) */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Cloud Sync Status Indicator */}
+          <div
+            title={
+              syncStatus === 'synced'
+                ? 'Backend Database: Connected & Saved to Firebase Firestore'
+                : syncStatus === 'saving'
+                ? 'Saving changes to Firebase Cloud Database...'
+                : syncStatus === 'offline'
+                ? 'Running offline (saved in local device storage)'
+                : 'Connection issue (retrying)'
+            }
+            className={`hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all ${
+              syncStatus === 'synced'
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                : syncStatus === 'saving'
+                ? 'bg-sky-50 text-sky-700 border-sky-200 animate-pulse'
+                : syncStatus === 'offline'
+                ? 'bg-slate-100 text-slate-600 border-slate-200'
+                : 'bg-amber-50 text-amber-700 border-amber-200'
+            }`}
+          >
+            {syncStatus === 'synced' && (
+              <>
+                <Cloud className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Cloud Saved</span>
+              </>
+            )}
+            {syncStatus === 'saving' && (
+              <>
+                <Loader2 className="w-3.5 h-3.5 text-sky-600 animate-spin" />
+                <span>Saving...</span>
+              </>
+            )}
+            {syncStatus === 'offline' && (
+              <>
+                <CloudOff className="w-3.5 h-3.5 text-slate-500" />
+                <span>Offline</span>
+              </>
+            )}
+            {syncStatus === 'error' && (
+              <>
+                <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
+                <span>Sync Retry</span>
+              </>
+            )}
+          </div>
+
           <button
             onClick={onOpenPrint}
             title="Print hard copy for ward clipboard"

@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Ward 3B Daily Internal Audits & 3-Shift Handover
+    match /daily_audits/{auditId} {
+      allow read, write: if auditId is string && auditId.size() <= 128;
+    }
+  }
+}
